@@ -4,13 +4,9 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 @Data
-public class AddressRequest {
+public class OrderItemRequest {
     @NotBlank
-    private String pinCode;
+    private Long itemId;
     @NotBlank
-    private String city;
-    @NotBlank
-    private String area;
-    @NotBlank
-    private String landmark;
+    private Integer quantity;
 }
