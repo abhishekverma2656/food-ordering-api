@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
@@ -22,7 +24,7 @@ public class Payment {
     private String transactionId;
 
     @Column(nullable = false)
-    private Double amount;
+    private BigDecimal amount;
 
     @Column(nullable = false)
     private LocalDateTime paymentDateTime;
@@ -36,6 +38,8 @@ public class Payment {
     @OneToOne
     @JoinColumn(name = "order_id")
     private Order order;
+
+
 
 
 

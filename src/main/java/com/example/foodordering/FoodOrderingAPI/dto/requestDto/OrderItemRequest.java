@@ -1,12 +1,14 @@
 package com.example.foodordering.FoodOrderingAPI.dto.requestDto;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import lombok.Data;
 
 @Data
 public class OrderItemRequest {
-    @NotBlank
+    @NotNull
     private Long itemId;
-    @NotBlank
+    @Positive
     private Integer quantity;
 }

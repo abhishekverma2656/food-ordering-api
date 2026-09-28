@@ -71,6 +71,8 @@ public class GlobalExceptionHandler {
             MethodArgumentNotValidException ex,
             HttpServletRequest request) {
 
+
+
         ErrorResponseDto error = new ErrorResponseDto(
                 LocalDateTime.now(),
                 HttpStatus.BAD_REQUEST.value(),
@@ -88,6 +90,8 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponseDto> handleGlobalException(
             Exception ex,
             HttpServletRequest request) {
+
+        ex.printStackTrace();
 
         ErrorResponseDto error = new ErrorResponseDto(
                 LocalDateTime.now(),
