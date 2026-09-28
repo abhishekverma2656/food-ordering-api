@@ -20,12 +20,6 @@ public class UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
 
-    public UserResponse creteUser(RegisterUserRequest request){
-        if(userRepository.existsByEmail(request.getEmail())){
-           throw new BusinessException("User Already Exists");
-        }
-        return userMapper.toResponse(userRepository.save(userMapper.toEntity(request)));
-    }
 
     public UserResponse getUserById(Long id){
 
