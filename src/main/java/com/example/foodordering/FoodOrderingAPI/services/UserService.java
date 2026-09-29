@@ -10,6 +10,9 @@ import com.example.foodordering.FoodOrderingAPI.mapper.UserMapper;
 import com.example.foodordering.FoodOrderingAPI.models.User;
 import com.example.foodordering.FoodOrderingAPI.repository.UserRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 @AllArgsConstructor
@@ -21,11 +24,20 @@ public class UserService {
     private final UserMapper userMapper;
 
 
-    public UserResponse getUserById(Long id){
+    public UserResponse getUserById(Long id) {
 
-        return userMapper.toResponse( userRepository.findById(id).
-                orElseThrow(()-> new ResourceNotFoundException("User not found with id: " + id)));
+        User currentUser = getCurrentUser();
 
+        if (!currentUser.getId().equals(id)) {
+            throw new AccessDeniedException("You can only access your own profile");
+        }
+
+        User user = userRepository.findById(id)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                "User not found with id: " + id));
+
+        return userMapper.toResponse(user);
     }
 
     public UserResponse updateUser(Long id, UpdateUserRequest request) {
@@ -53,6 +65,18 @@ public class UserService {
         }
 
         userRepository.deleteById(id);
+    }
+
+    private User getCurrentUser() {
+
+        Authentication authentication =
+                SecurityContextHolder.getContext().getAuthentication();
+
+        String email = authentication.getName();
+
+        return userRepository.findByEmail(email)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("User not found"));
     }
 
 

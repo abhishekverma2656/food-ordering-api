@@ -9,6 +9,7 @@ import com.example.foodordering.FoodOrderingAPI.models.User;
 import com.example.foodordering.FoodOrderingAPI.repository.AddressRepository;
 import com.example.foodordering.FoodOrderingAPI.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -45,6 +46,8 @@ public class AddressService {
                         new ResourceNotFoundException(
                                 "Address not found with id: " + id
                         ));
+
+
 
         return addressMapper.toResponse(address);
     }

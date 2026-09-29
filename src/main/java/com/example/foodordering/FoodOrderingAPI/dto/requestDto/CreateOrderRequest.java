@@ -12,8 +12,8 @@ public class CreateOrderRequest {
     @NotNull
     private Long restaurantId;
 
-    @NotNull
-    private Long userId;
+   // @NotNull
+    //private Long userId;
 
     @NotNull
     @Valid

@@ -18,6 +18,9 @@ import com.example.foodordering.FoodOrderingAPI.repository.OrderRepository;
 import com.example.foodordering.FoodOrderingAPI.repository.RestaurantRepository;
 import com.example.foodordering.FoodOrderingAPI.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -39,12 +42,10 @@ public class OrderService {
 
     public OrderResponse createOrder(CreateOrderRequest request) {
 
+
+
         // 1. Find User
-        User user = userRepository.findById(request.getUserId())
-                .orElseThrow(() ->
-                        new ResourceNotFoundException(
-                                "User not found with id: " + request.getUserId()
-                        ));
+        User user = getCurrentUser();
 
 
         // 2. Find Restaurant
@@ -61,6 +62,12 @@ public class OrderService {
                         new ResourceNotFoundException(
                                 "Address not found with id: " + request.getAddressId()
                         ));
+
+        if (!address.getUser().getId().equals(user.getId())) {
+            throw new AccessDeniedException(
+                    "You can only use your own address"
+            );
+        }
 
 
         // 4. Create Order
@@ -140,7 +147,17 @@ public class OrderService {
     }
 
 
+
+
     public List<OrderResponse> getOrdersByUser(Long userId) {
+
+        User currentUser = getCurrentUser();
+
+        if (!currentUser.getId().equals(userId)) {
+            throw new AccessDeniedException(
+                    "You can only access your own orders"
+            );
+        }
 
         if (!userRepository.existsById(userId)) {
             throw new ResourceNotFoundException(
@@ -192,5 +209,20 @@ public class OrderService {
 
         return orderMapper.toResponse(cancelledOrder);
     }
+
+
+    private User getCurrentUser() {
+
+        Authentication authentication =
+                SecurityContextHolder.getContext().getAuthentication();
+
+        String email = authentication.getName();
+
+        return userRepository.findByEmail(email)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("User not found"));
+    }
+
+
 }
 
