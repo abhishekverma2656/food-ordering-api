@@ -35,8 +35,11 @@ public class AuthService {
                 passwordEncoder.encode(request.getPassword());
 
         user.setPassword(hashedPassword);
+        user.setRole("USER");
+        System.out.println("ROLE = " + user.getRole());
 
         User savedUser = userRepository.save(user);
+
 
         return userMapper.toResponse(savedUser);
     }

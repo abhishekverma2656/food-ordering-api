@@ -30,6 +30,10 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("/api/users/**").hasAuthority("USER")
+                        .requestMatchers("/api/orders/**").hasAuthority("USER")
+                        .requestMatchers("/api/addresses/**").hasAuthority("USER")
+                        .requestMatchers("/api/payments/**").hasAuthority("USER")
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(
